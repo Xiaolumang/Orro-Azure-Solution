@@ -34,3 +34,30 @@ def highlight_excel(output):
     wb.save(output)
     output.seek(0)
     return output
+
+# path = os.path.join(helper.folder, 'compare.xlsx')
+# helper.export_2_excel(path, merged_df_ajusted,Columns.COST_CENTER.value)
+# #merged_df_ajusted.to_excel(path, index=False, engine='openpyxl')
+
+
+def export_2_excel(output_file_path,df,*args):
+
+    with pd.ExcelWriter(output_file_path, engine='xlsxwriter') as writer:
+        sheetname = 'comparison'
+        df.to_excel(writer, sheet_name=sheetname, index=False)
+
+        workbook = writer.book
+        num_format = workbook.add_format({'num_format': '0'})
+        worksheet = writer.sheets[sheetname]
+
+        # Adjust width of columns based on header length
+        for col_num, column in enumerate(df.columns):
+            
+            max_length = max(df[column].astype(str).map(len).max(), len(column))  # Max length of content or header
+        
+            if column == args[0]:
+                worksheet.set_column(col_num,col_num,max_length + 2, num_format)
+                continue
+            # Set the column width based on header length with a bit of padding
+            worksheet.set_column(col_num, col_num, max_length)  # Adding 2 for padding
+

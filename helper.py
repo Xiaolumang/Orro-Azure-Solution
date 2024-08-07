@@ -63,9 +63,12 @@ def process_file_summarise(file_content):
 def process_file_compare(file_content):
     df = pd.read_excel(BytesIO(file_content),sheet_name)
     # Add your processing logic here
-    output = BytesIO()
+    #output = BytesIO()
     df = orro_compare_helper.compare_charge_with_expected(df)
-    df.to_excel(output, index=False)
+    # df.to_excel(output, index=False)
+    # output.seek(0)
+    output = BytesIO()
+    excel_helper.export_2_excel(output, df, comm.MonthlyBillReviewColumns.COST_CENTER.display_name)  # Replace 'ColumnToFormat' with the column you want to format
     output.seek(0)
     return output.getvalue()
 
